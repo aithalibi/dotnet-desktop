@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Location-voiture-front-web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92eb8f260ad4cae8366585d2da4250704b1ffd55")]
 [assembly: System.Reflection.AssemblyProductAttribute("Location-voiture-front-web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Location-voiture-front-web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

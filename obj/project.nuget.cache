@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ALeiTFgy9gM=",
+  "dgSpecHash": "zshrDUR19dw=",
   "success": true,
   "projectFilePath": "/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/Location-voiture-front-web.csproj",
   "expectedPackageFiles": [
@@ -13,14 +13,19 @@
     "/Users/m3/.nuget/packages/microsoft.extensions.primitives/6.0.0/microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "/Users/m3/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "/Users/m3/.nuget/packages/system.text.encodings.web/8.0.0/system.text.encodings.web.8.0.0.nupkg.sha512",
-    "/Users/m3/.nuget/packages/system.text.json/8.0.0/system.text.json.8.0.0.nupkg.sha512"
+    "/Users/m3/.nuget/packages/system.text.json/8.0.0/system.text.json.8.0.0.nupkg.sha512",
+    "/Users/m3/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/m3/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/m3/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.22/microsoft.netcore.app.host.osx-arm64.8.0.22.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1903",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-8g4q-xg66-9fp4",
+      "projectPath": "/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/Location-voiture-front-web.csproj",
+      "warningLevel": 1,
+      "filePath": "/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/Location-voiture-front-web.csproj",
       "libraryId": "System.Text.Json",
       "targetGraphs": [
         "net8.0"
@@ -29,8 +34,10 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Text.Json' 8.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w",
+      "projectPath": "/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/Location-voiture-front-web.csproj",
+      "warningLevel": 1,
+      "filePath": "/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/Location-voiture-front-web.csproj",
       "libraryId": "System.Text.Json",
       "targetGraphs": [
         "net8.0"

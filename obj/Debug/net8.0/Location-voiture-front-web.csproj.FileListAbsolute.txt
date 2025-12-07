@@ -19,11 +19,6 @@
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/bin/Debug/net8.0/HttpClientFactory.dll
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets.build.json
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets.development.json
-/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets/msbuild.Location-voiture-front-web.Microsoft.AspNetCore.StaticWebAssets.props
-/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets/msbuild.build.Location-voiture-front-web.props
-/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.Location-voiture-front-web.props
-/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.Location-voiture-front-web.props
-/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets.pack.json
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/scopedcss/Pages/Shared/_Layout.cshtml.rz.scp.css
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/scopedcss/bundle/Location-voiture-front-web.styles.css
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/scopedcss/projectbundle/Location-voiture-front-web.bundle.scp.css
@@ -33,3 +28,12 @@
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/Location-voiture-front-web.pdb
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/Location-voiture-front-web.genruntimeconfig.cache
 /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/ref/Location-voiture-front-web.dll
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/bin/Debug/net8.0/Location-voiture-front-web.staticwebassets.endpoints.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/rpswa.dswa.cache.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/Location-voiture-front-web.sourcelink.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/rjimswa.dswa.cache.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/rjsmrazor.dswa.cache.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/rjsmcshtml.dswa.cache.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets.build.json.cache
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/staticwebassets.build.endpoints.json
+/Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/obj/Debug/net8.0/swae.build.ex.cache

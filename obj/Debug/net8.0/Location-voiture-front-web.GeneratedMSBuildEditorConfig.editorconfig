@@ -1,5 +1,7 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
@@ -17,6 +19,8 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
 [/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vRGFzaGJvYXJkLmNzaHRtbA==
@@ -92,6 +96,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Vehicules/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVoaWN1bGVzL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Vehicules/Index_old.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVoaWN1bGVzL0luZGV4X29sZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/_ViewImports.cshtml]

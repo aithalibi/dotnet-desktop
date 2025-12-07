@@ -1,0 +1,299 @@
+@page
+@model IndexModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@using System.Linq
+@inject IVehiculeService VehiculeService
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Catalogue Véhicules";
+}
+
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    <div class="container">
+        <!-- Header with Title and Search Bar -->
+        <div class="row mb-4">
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold mb-2">
+                    <i class="fas fa-car text-primary"></i> Catalogue Véhicules
+                </h1>
+                <p class="lead text-muted">Découvrez notre large gamme de véhicules</p>
+            </div>
+            <div class="col-lg-5 d-flex align-items-center gap-2">
+                @if (Model.IsAdmin)
+                {
+                    <a href="/Vehicules/Create" class="btn btn-success btn-lg shadow">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </a>
+                }
+                <!-- Quick Search Bar -->
+                <form method="get" class="flex-grow-1">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text" style="background: white; border: 2px solid #667eea;">
+                            <i class="fas fa-search text-primary"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Rechercher..."
+                            name="SearchQuery"
+                            value="@Model.SearchQuery"
+                            id="searchInput"
+                            style="border: 2px solid #667eea; border-left: none;">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert @(Model.IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                <i class="fas @(Model.IsError ? "fa-exclamation-circle" : "fa-check-circle")"></i>
+                @Model.Message
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Main Content: Sidebar + Vehicles Grid -->
+        <div class="row g-4">
+            <!-- Left Sidebar: Filters -->
+            <div class="col-lg-3">
+                <div class="card border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2); position: sticky; top: 20px;">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4 text-white fw-bold">
+                            <i class="fas fa-sliders-h me-2"></i> Filtres
+                        </h5>
+                        <form method="get">
+                            <!-- Hidden Search Query (keep it) -->
+                            <input type="hidden" name="SearchQuery" value="@Model.SearchQuery">
+
+                            <!-- Filtre Marque -->
+                            <div class="mb-4">
+                                <label class="form-label text-white fw-bold mb-2">
+                                    <i class="fas fa-tag me-2"></i>Marque
+                                </label>
+                                <select class="form-select" name="FilterMarque" id="filterMarque" style="border: 2px solid rgba(255,255,255,0.3); background-color: rgba(255,255,255,0.95);">
+                                    <option value="">Toutes les marques</option>
+                                    @if (Model.Marques != null)
+                                    {
+                                        @foreach (var marque in Model.Marques)
+                                        {
+                                            <option value="@marque" selected="@(Model.FilterMarque == marque ? "selected" : "")">@marque</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Filtre Prix Min -->
+                            <div class="mb-4">
+                                <label class="form-label text-white fw-bold mb-2">
+                                    <i class="fas fa-dollar-sign me-2"></i>Prix Min (DH/jour)
+                                </label>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="Min"
+                                    name="FilterPrixMin"
+                                    value="@Model.FilterPrixMin"
+                                    step="10"
+                                    min="0"
+                                    style="border: 2px solid rgba(255,255,255,0.3); background-color: rgba(255,255,255,0.95);">
+                            </div>
+
+                            <!-- Filtre Prix Max -->
+                            <div class="mb-4">
+                                <label class="form-label text-white fw-bold mb-2">
+                                    <i class="fas fa-dollar-sign me-2"></i>Prix Max (DH/jour)
+                                </label>
+                                <input 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="Max"
+                                    name="FilterPrixMax"
+                                    value="@Model.FilterPrixMax"
+                                    step="10"
+                                    min="0"
+                                    style="border: 2px solid rgba(255,255,255,0.3); background-color: rgba(255,255,255,0.95);">
+                            </div>
+
+                            <!-- Filtre Disponibilité -->
+                            <div class="mb-4">
+                                <label class="form-label text-white fw-bold mb-2">
+                                    <i class="fas fa-car me-2"></i>Disponibilité
+                                </label>
+                                <select class="form-select" name="FilterDisponible" id="filterDisponible" style="border: 2px solid rgba(255,255,255,0.3); background-color: rgba(255,255,255,0.95);">
+                                    <option value="">Tous les véhicules</option>
+                                    <option value="true" selected="@(Model.FilterDisponible == true ? "selected" : "")">✅ Disponibles</option>
+                                    <option value="false" selected="@(Model.FilterDisponible == false ? "selected" : "")">❌ Non disponibles</option>
+                                </select>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-light btn-lg" style="font-weight: 600; color: #667eea;">
+                                    <i class="fas fa-filter me-2"></i>Appliquer
+                                </button>
+                                <a href="/Vehicules" class="btn btn-outline-light" style="border-width: 2px; color: white;">
+                                    <i class="fas fa-redo me-2"></i>Réinitialiser
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Content: Results Counter + Vehicles Grid -->
+            <div class="col-lg-9">
+
+        <!-- Affichage du nombre de résultats -->
+        @if (Model.VehiculesFiltered != null && Model.VehiculesFiltered.Any())
+        {
+            <div class="alert mb-4 d-flex justify-content-between align-items-center" role="alert" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid #4caf50; border-radius: 10px; color: #2e7d32;">
+                <div>
+                    <i class="fas fa-car me-2 fs-5"></i> 
+                    <strong class="fs-5">@Model.VehiculesFiltered.Count</strong> <span class="fs-5">véhicule(s) trouvé(s)</span>
+                    @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+                    {
+                        <span class="ms-2">pour "<strong style="color: #1565c0;">@Model.SearchQuery</strong>"</span>
+                    }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.SearchQuery) || !string.IsNullOrWhiteSpace(Model.FilterMarque) || Model.FilterPrixMin.HasValue || Model.FilterPrixMax.HasValue || Model.FilterDisponible.HasValue)
+                {
+                    <a href="/Vehicules" class="btn btn-sm" style="background-color: #4caf50; color: white; border: none;">
+                        <i class="fas fa-times me-2"></i> Effacer les filtres
+                    </a>
+                }
+            </div>
+        }
+
+        @if (Model.VehiculesFiltered != null && Model.VehiculesFiltered.Any())
+        {
+            <div class="row g-4">
+                @foreach (var vehicule in Model.VehiculesFiltered)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 vehicle-card" style="box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15); border-radius: 12px; transition: all 0.3s ease;">
+                            <div style="position: relative; overflow: hidden; height: 240px; border-radius: 12px 12px 0 0;">
+                                @if (!string.IsNullOrEmpty(vehicule.ImagePrincipaleUrl))
+                                {
+                                    <img src="@vehicule.ImagePrincipaleUrl" class="card-img-top" 
+                                         alt="@(vehicule.Marque) @(vehicule.Modele)" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                                }
+                                else
+                                {
+                                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 100%; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+                                        <i class="fas fa-car fa-5x text-secondary"></i>
+                                    </div>
+                                }
+                                <span class="badge @(vehicule.EstDisponible ? "bg-success" : "bg-danger")" 
+                                      style="position: absolute; top: 10px; right: 10px; z-index: 10; font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+                                    @(vehicule.EstDisponible ? "✓ Disponible" : "✗ Non disponible")
+                                </span>
+                            </div>
+
+                            <div class="card-body pb-2">
+                                <h5 class="card-title fw-bold text-dark mb-1" style="font-size: 1.1rem;">
+                                    <i class="fas fa-car me-2" style="color: #667eea;"></i>@vehicule.Marque @vehicule.Modele
+                                </h5>
+                                <p class="card-text text-muted small mb-3">
+                                    <i class="fas fa-hashtag me-1" style="color: #999;"></i>@vehicule.Immatriculation
+                                </p>
+
+                                <div class="row text-center mb-3 g-2">
+                                    <div class="col-6" style="padding: 8px; background: rgba(102, 126, 234, 0.05); border-radius: 8px;">
+                                        <small class="d-block text-muted"><i class="fas fa-calendar-alt me-1"></i>Année</small>
+                                        <strong style="color: #667eea;">@vehicule.Annee</strong>
+                                    </div>
+                                    <div class="col-6" style="padding: 8px; background: rgba(102, 126, 234, 0.05); border-radius: 8px;">
+                                        <small class="d-block text-muted"><i class="fas fa-palette me-1"></i>Couleur</small>
+                                        <strong style="color: #667eea;">@(vehicule.Couleur ?? "N/A")</strong>
+                                    </div>
+                                </div>
+
+                                <hr style="margin: 0.75rem 0; border-color: rgba(102, 126, 234, 0.2);">
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <small class="text-muted d-block">Prix par jour</small>
+                                        <span class="fw-bold h5 mb-0" style="color: #764ba2;">@vehicule.PrixJournalier.ToString("C")</span>
+                                    </div>
+                                    <small class="text-muted">/jour</small>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <a href="/Vehicules/Detail?id=@vehicule.Id" class="btn btn-sm flex-grow-1" style="background-color: #667eea; color: white; border: none;">
+                                        <i class="fas fa-eye me-1"></i> Détails
+                                    </a>
+                                    @if (vehicule.EstDisponible)
+                                    {
+                                        <a href="/Locations/Create?vehiculeId=@vehicule.Id" class="btn btn-sm flex-grow-1" style="background-color: #4caf50; color: white; border: none;">
+                                            <i class="fas fa-calendar-plus me-1"></i> Louer
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (Model.IsAdmin)
+                            {
+                                <div class="card-footer bg-white border-top" style="border-color: rgba(102, 126, 234, 0.1) !important;">
+                                    <div class="d-flex gap-2">
+                                        <a href="/Vehicules/Edit?id=@vehicule.Id" class="btn btn-sm btn-warning flex-grow-1">
+                                            <i class="fas fa-edit me-1"></i> Modifier
+                                        </a>
+                                        <a href="#" onclick="deleteVehicule(@vehicule.Id)" class="btn btn-sm btn-danger flex-grow-1">
+                                            <i class="fas fa-trash me-1"></i> Supprimer
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+    }
+    else if (Model.VehiculesFiltered == null || !Model.VehiculesFiltered.Any())
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            <i class="fas fa-search"></i> Aucun véhicule ne correspond à votre recherche
+            <br>
+            <small class="text-muted">
+                @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+                {
+                    <span>Essayez avec d'autres critères de recherche</span>
+                }
+                else
+                {
+                    <span>Aucun véhicule disponible</span>
+                }
+            </small>
+            <br>
+            <a href="/Vehicules" class="btn btn-sm btn-outline-primary mt-2">
+                <i class="fas fa-redo"></i> Réinitialiser la recherche
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        async function deleteVehicule(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce véhicule?')) {
+                try {
+                    const response = await fetch(`/api/Vehicules/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Erreur lors de la suppression');
+                    }
+                } catch (error) {
+                    alert('Erreur: ' + error);
+                }
+            }
+        }
+    </script>
+}
+
+
