@@ -1,0 +1,375 @@
+@page "{id:int}"
+@model DetailModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@using System.Linq
+@inject ILocationService LocationService
+@inject IPaiementService PaiementService
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Détail Location";
+}
+
+<style>
+    .detail-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .detail-header h2 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .info-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .info-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+    
+    .info-content {
+        flex: 1;
+    }
+    
+    .info-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0;
+    }
+    
+    .price-highlight {
+        font-size: 1.8rem;
+        color: #28a745;
+        font-weight: 700;
+    }
+    
+    .qr-section {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .qr-section img {
+        max-width: 250px;
+        border: 3px solid #667eea;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+    }
+    
+    .payment-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 20px;
+    }
+    
+    .payment-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .payment-item {
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        transition: background-color 0.3s;
+    }
+    
+    .payment-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .payment-item:last-child {
+        border-bottom: none;
+    }
+    
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .status-en-attente {
+        background-color: #ffc107;
+        color: #000;
+    }
+    
+    .status-en-cours {
+        background-color: #17a2b8;
+        color: white;
+    }
+    
+    .status-terminee {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .status-annulee {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .back-button {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container my-4">
+    <!-- Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Bouton retour -->
+    <div class="back-button">
+        <a href="/Locations" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à mes locations
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            @if (Model.Location != null)
+            {
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <h2><i class="fas fa-file-contract"></i> Location #@Model.Location.Id</h2>
+                        <p class="mb-0 mt-2">@Model.Location.Vehicule?.Marque @Model.Location.Vehicule?.Modele</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <!-- Véhicule Info -->
+                        <div class="info-section">
+                            <h5 class="mb-3"><i class="fas fa-car"></i> Informations du véhicule</h5>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Véhicule</div>
+                                    <p class="info-value">@Model.Location.Vehicule?.Marque @Model.Location.Vehicule?.Modele</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Immatriculation</div>
+                                    <p class="info-value">@Model.Location.Vehicule?.Immatriculation</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Statut</div>
+                                    <p class="info-value">
+                                        <span class="status-badge status-@Model.Location.Statut.ToString().ToLower().Replace("_", "-")">
+                                            @Model.Location.Statut
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates et Durée -->
+                        <div class="info-section">
+                            <h5 class="mb-3"><i class="fas fa-calendar-alt"></i> Période de location</h5>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Date de début</div>
+                                    <p class="info-value">@Model.Location.DateDebut.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Date de fin</div>
+                                    <p class="info-value">@Model.Location.DateFin.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Durée totale</div>
+                                    <p class="info-value">@Model.Location.DureeJours jour(s)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prix -->
+                        <div class="info-section">
+                            <h5 class="mb-3"><i class="fas fa-dollar-sign"></i> Tarification</h5>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Montant total</div>
+                                    <p class="price-highlight">@Model.Location.MontantTotal.ToString("C")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QR Code -->
+                        @if (!string.IsNullOrEmpty(Model.Location.QRCode))
+                        {
+                            <div class="qr-section">
+                                <h5 class="mb-3"><i class="fas fa-qrcode"></i> Code QR de la location</h5>
+                                <img id="qrCodeImg" alt="QR Code" class="img-fluid" />
+                            </div>
+                            <script>
+                                // Construire le data:image avec le base64 reçu du backend
+                                var qrCodeBase64 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Location.QRCode));
+                                var qrCodeDataUrl = "data:image/png;base64," + qrCodeBase64;
+                                document.getElementById('qrCodeImg').src = qrCodeDataUrl;
+                                console.log("QR Code loaded, length:", qrCodeBase64.length);
+                            </script>
+                        }
+                        else
+                        {
+                            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                                <p><strong>⚠️ QR Code non généré</strong></p>
+                                <p style="font-size: 12px; color: #666;">QRCode value: "@Model.Location?.QRCode"</p>
+                            </div>
+                        }
+
+                        <!-- Facture -->
+                        @if (!string.IsNullOrEmpty(Model.Location.FactureUrl))
+                        {
+                            <div class="text-center mt-4">
+                                <a href="@Model.Location.FactureUrl" target="_blank" class="btn btn-success btn-lg">
+                                    <i class="fas fa-file-pdf"></i> Télécharger la facture
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle"></i> Location non trouvée
+                </div>
+            }
+        </div>
+
+        <!-- Paiements -->
+        @if (Model.Location != null)
+        {
+            <div class="col-lg-4">
+                <div class="payment-card">
+                    <div class="payment-header">
+                        <h5 class="mb-0"><i class="fas fa-credit-card"></i> Paiements associés</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (Model.Paiements != null && Model.Paiements.Any())
+                        {
+                            @foreach (var paiement in Model.Paiements)
+                            {
+                                <div class="payment-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong class="text-success" style="font-size: 1.2rem;">@paiement.Montant.ToString("C")</strong>
+                                        <span class="badge bg-@Model.GetPaiementStatusColor(paiement.Statut)">
+                                            @paiement.Statut
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <span><i class="fas fa-calendar"></i> @paiement.DatePaiement.ToString("dd/MM/yyyy")</span>
+                                        <span><i class="fas fa-money-check"></i> @paiement.ModePaiement</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(paiement.Reference))
+                                    {
+                                        <div class="text-muted small mt-1">
+                                            <i class="fas fa-hashtag"></i> Réf: @paiement.Reference
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="p-4 text-center text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
+                                <p class="mb-0">Aucun paiement enregistré</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

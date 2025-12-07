@@ -1,0 +1,114 @@
+@page
+@model IndexModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@inject IPaiementService PaiementService
+@inject ILocationService LocationService
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Gestion Paiements";
+}
+
+<div class="container my-5">
+    <h1 class="mb-4"><i class="fas fa-credit-card"></i> Gestion des Paiements</h1>
+
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <div class="alert @(IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+            @Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Paiements != null && Paiements.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                        <th>Montant</th>
+                        <th>Mode</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var paiement in Paiements)
+                    {
+                        <tr>
+                            <td><strong>#@paiement.Id</strong></td>
+                            <td>#@paiement.LocationId</td>
+                            <td>@paiement.Montant.ToString("C")</td>
+                            <td>@paiement.ModePaiement</td>
+                            <td>@paiement.DatePaiement:dd/MM/yyyy</td>
+                            <td>
+                                <span class="badge bg-@GetStatusColor(paiement.Statut)">
+                                    @paiement.Statut
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/Paiements/Detail/@paiement.Id" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fas fa-info-circle"></i> Aucun paiement enregistré
+        </div>
+    }
+</div>
+
+@functions {
+    public List<PaiementDTO>? Paiements { get; set; }
+    public string? Message { get; set; }
+    public bool IsError { get; set; }
+
+    private string GetStatusColor(string? statut)
+    {
+        return statut?.ToUpper() switch
+        {
+            "ENATTENTE" => "warning",
+            "VALIDE" => "success",
+            "ECHOUE" => "danger",
+            "REMBOURSE" => "info",
+            _ => "secondary"
+        };
+    }
+
+    public async Task OnGetAsync()
+    {
+        var user = AuthService.GetCurrentUser();
+        
+        if (user == null)
+        {
+            Response.Redirect("/Auth/Login");
+            return;
+        }
+
+        var response = await PaiementService.GetAllPaiementsAsync();
+        if (response.Success)
+        {
+            Paiements = response.Data;
+        }
+        else
+        {
+            Message = response.Message ?? "Erreur lors du chargement";
+            IsError = true;
+        }
+    }
+}
+
+@inject IPaiementService PaiementService
+@inject ILocationService LocationService
+@inject IAuthService AuthService

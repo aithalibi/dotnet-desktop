@@ -1,0 +1,123 @@
+@page
+@model DetailModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@inject IVehiculeService VehiculeService
+@inject ILocationService LocationService
+
+@{
+    ViewData["Title"] = "Détail Véhicule";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            @if (Model.Vehicule != null)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                @if (!string.IsNullOrEmpty(Model.Vehicule.ImagePrincipaleUrl))
+                                {
+                                    <img src="@Model.Vehicule.ImagePrincipaleUrl" class="img-fluid rounded" 
+                                         alt="@(Model.Vehicule.Marque) @(Model.Vehicule.Modele)">
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <h1>@Model.Vehicule.Marque @Model.Vehicule.Modele</h1>
+                                <p class="text-muted fs-5">@Model.Vehicule.Immatriculation</p>
+
+                                <div class="mb-4">
+                                    <h3 class="text-primary">@Model.Vehicule.PrixJournalier.ToString("C")/jour</h3>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>Caractéristiques</h5>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>Année:</strong> @Model.Vehicule.Annee
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Couleur:</strong> @Model.Vehicule.Couleur
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Kilométrage:</strong> @Model.Vehicule.Kilometrage km
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Type:</strong> @Model.Vehicule.TypeVehicule?.Nom
+                                        </li>
+                                        <li class="list-group-item">
+                                            @if (Model.Vehicule.EstDisponible)
+                                            {
+                                                <span class="badge bg-success">Disponible</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Non disponible</span>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                @if (Model.Vehicule.EstDisponible)
+                                {
+                                    <a href="/Locations/Create?vehiculeId=@Model.Vehicule.Id" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-book"></i> Louer ce véhicule
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Vehicule.ImagesUrls != null && Model.Vehicule.ImagesUrls.Any())
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5>Galerie</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                @foreach (var imageUrl in Model.Vehicule.ImagesUrls)
+                                {
+                                    <div class="col-md-4">
+                                        <img src="@imageUrl" class="img-fluid rounded" alt="Galerie">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    Véhicule non trouvé
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5>Informations de location</h5>
+                </div>
+                <div class="card-body">
+                    <p>Disponibilité</p>
+                    <div id="availabilityCalendar">
+                        <!-- Placeholder for calendar -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <a href="/Vehicules" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour au catalogue
+    </a>
+</div>
+
+

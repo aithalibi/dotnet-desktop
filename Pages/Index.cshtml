@@ -1,0 +1,185 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Accueil - Location de Voitures";
+}
+
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <section class="hero-section bg-primary text-white py-5" style="background: linear-gradient(135deg, #0d6efd 0%, #0051b3 100%); min-height: 400px; display: flex; align-items: center;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-3 fw-bold mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                        <i class="fas fa-car"></i> Location de Voitures Facile
+                    </h1>
+                    <p class="lead mb-4">
+                        Trouvez la voiture parfaite pour votre prochain voyage. Large gamme, prix compétitifs, service 24/7.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/Vehicules" class="btn btn-light btn-lg">
+                            <i class="fas fa-search"></i> Parcourir les véhicules
+                        </a>
+                        <a href="#popular" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-arrow-down"></i> Voir les populaires
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="container my-5">
+    <!-- Features Section -->
+    <section class="mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body py-5">
+                        <div class="feature-icon bg-primary rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-car text-white fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Large Gamme</h5>
+                        <p class="card-text text-muted">Plus de 100 véhicules disponibles pour tous les budgets</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body py-5">
+                        <div class="feature-icon bg-success rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shield-alt text-white fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">100% Sécurisé</h5>
+                        <p class="card-text text-muted">Tous nos véhicules sont assurés et régulièrement entretenus</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body py-5">
+                        <div class="feature-icon bg-info rounded-circle mx-auto mb-3" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-headset text-white fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Support 24/7</h5>
+                        <p class="card-text text-muted">Notre équipe est toujours disponible pour vous aider</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Vehicles Section -->
+    <section id="popular" class="mb-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-4 fw-bold">
+                    <i class="fas fa-star text-warning"></i> Véhicules Populaires
+                </h2>
+            </div>
+        </div>
+
+        @if (Model.Vehicules != null && Model.Vehicules.Any())
+        {
+            <div class="row g-4">
+                @foreach (var vehicule in Model.Vehicules.Take(6))
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm vehicle-card">
+                            <div style="position: relative; overflow: hidden; height: 220px;">
+                                @if (!string.IsNullOrEmpty(vehicule.ImagePrincipaleUrl))
+                                {
+                                    <img src="@vehicule.ImagePrincipaleUrl" class="card-img-top"
+                                         alt="@(vehicule.Marque) @(vehicule.Modele)"
+                                         style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                                }
+                                else
+                                {
+                                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 100%;">
+                                        <i class="fas fa-car fa-5x text-secondary"></i>
+                                    </div>
+                                }
+                                @if (vehicule.EstDisponible)
+                                {
+                                    <span class="badge bg-success" style="position: absolute; top: 10px; right: 10px;">Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger" style="position: absolute; top: 10px; right: 10px;">Non disponible</span>
+                                }
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@vehicule.Marque @vehicule.Modele</h5>
+                                <p class="card-text text-muted small">@vehicule.Immatriculation</p>
+
+                                <div class="mb-3">
+                                    <small class="text-secondary">
+                                        <i class="fas fa-calendar"></i> @vehicule.Annee |
+                                        <i class="fas fa-paint-brush"></i> @(vehicule.Couleur ?? "N/A")
+                                    </small>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary fs-6">@vehicule.PrixJournalier.ToString("C")</span>
+                                    <a href="/Vehicules/Detail?id=@vehicule.Id" class="btn btn-sm btn-outline-primary">
+                                        Détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="/Vehicules" class="btn btn-primary btn-lg">
+                    <i class="fas fa-eye"></i> Voir tous les véhicules
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-info-circle"></i> Aucun véhicule disponible pour le moment
+            </div>
+        }
+    </section>
+</div>
+
+<style>
+    .hero-section {
+        background-attachment: fixed;
+    }
+
+    .vehicle-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .vehicle-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .vehicle-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .feature-icon {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+</style>
+
+
+

@@ -1,0 +1,171 @@
+@page
+@model DashboardModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@inject IAuthService AuthService
+@inject IVehiculeService VehiculeService
+@inject ILocationService LocationService
+
+@{
+    ViewData["Title"] = "Tableau de Bord Admin";
+}
+
+<div class="container-fluid my-5">
+    <h1 class="mb-4"><i class="fas fa-tachometer-alt"></i> Tableau de Bord</h1>
+
+    @if (User == null)
+    {
+        <div class="alert alert-warning" role="alert">
+            Accès réservé aux administrateurs. <a href="/Auth/Login">Se connecter</a>
+        </div>
+    }
+    else
+    {
+        <div class="row mb-5">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-white-50">Total Véhicules</h6>
+                        <h2 class="mb-0">@(Vehicules?.Count ?? 0)</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-white-50">Véhicules Disponibles</h6>
+                        <h2 class="mb-0">@(Vehicules?.Count(v => v.EstDisponible) ?? 0)</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-white-50">Total Locations</h6>
+                        <h2 class="mb-0">@(Locations?.Count ?? 0)</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-white-50">En Cours</h6>
+                        <h2 class="mb-0">@(Locations?.Count(l => l.Statut?.ToUpper() == "ENCOURS") ?? 0)</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Récentes Locations</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (Locations?.Any() == true)
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Véhicule</th>
+                                            <th>Statut</th>
+                                            <th>Montant</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var location in Locations.OrderByDescending(l => l.DateCreation).Take(5))
+                                        {
+                                            <tr>
+                                                <td>#@location.Id</td>
+                                                <td>@location.Vehicule?.Marque @location.Vehicule?.Modele</td>
+                                                <td>
+                                                    <span class="badge bg-@GetStatusColor(location.Statut)">
+                                                        @location.Statut
+                                                    </span>
+                                                </td>
+                                                <td>@location.MontantTotal.ToString("C")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Actions Rapides</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/Vehicules/Create" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Ajouter un Véhicule
+                            </a>
+                            <a href="/Vehicules" class="btn btn-outline-primary">
+                                <i class="fas fa-car"></i> Gérer Véhicules
+                            </a>
+                            <a href="/Locations" class="btn btn-outline-info">
+                                <i class="fas fa-calendar"></i> Gérer Locations
+                            </a>
+                            <a href="/Entretiens" class="btn btn-outline-warning">
+                                <i class="fas fa-tools"></i> Gérer Entretiens
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    public UtilisateurDTO? User { get; set; }
+    public List<VehiculeDTO>? Vehicules { get; set; }
+    public List<LocationDTO>? Locations { get; set; }
+
+    private string GetStatusColor(string? statut)
+    {
+        return statut?.ToUpper() switch
+        {
+            "ENATTENTE" => "warning",
+            "CONFIRMEE" => "info",
+            "ENCOURS" => "primary",
+            "TERMINEE" => "success",
+            "ANNULEE" => "danger",
+            _ => "secondary"
+        };
+    }
+
+    public async Task OnGetAsync()
+    {
+        User = AuthService.GetCurrentUser();
+
+        if (User?.TypeUtilisateur != "ADMINISTRATEUR" && User?.TypeUtilisateur != "EMPLOYE")
+        {
+            Response.Redirect("/");
+            return;
+        }
+
+        var vehiculesResponse = await VehiculeService.GetAllVehicuelsAsync();
+        if (vehiculesResponse.Success)
+        {
+            Vehicules = vehiculesResponse.Data;
+        }
+
+        var locationsResponse = await LocationService.GetAllLocationsAsync();
+        if (locationsResponse.Success)
+        {
+            Locations = locationsResponse.Data;
+        }
+    }
+}
+
+@inject IVehiculeService VehiculeService
+@inject ILocationService LocationService
+@inject IAuthService AuthService

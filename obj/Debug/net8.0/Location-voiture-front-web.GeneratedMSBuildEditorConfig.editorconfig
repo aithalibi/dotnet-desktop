@@ -1,0 +1,107 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Location_voiture_front_web
+build_property.RootNamespace = Location_voiture_front_web
+build_property.ProjectDir = /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/m3/Documents/Projects/c#.net/Location-voiture-front-web
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Admin/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRtaW4vRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9Gb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9Mb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9Mb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9SZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9SZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Auth/VerifyResetCode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXV0aC9WZXJpZnlSZXNldENvZGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Entretiens/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRW50cmV0aWVucy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Locations/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9jYXRpb25zL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Locations/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9jYXRpb25zL0RldGFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Locations/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9jYXRpb25zL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Paiements/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGFpZW1lbnRzL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Profil/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJvZmlsL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Vehicules/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVoaWN1bGVzL0RldGFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Vehicules/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVmVoaWN1bGVzL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/m3/Documents/Projects/c\#.net/Location-voiture-front-web/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-6ck1v6p3tl

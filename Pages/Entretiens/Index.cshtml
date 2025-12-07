@@ -1,0 +1,112 @@
+@page
+@model IndexModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@inject IEntretienService EntretienService
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Gestion Entretiens";
+}
+
+<div class="container my-5">
+    <h1 class="mb-4"><i class="fas fa-tools"></i> Gestion des Entretiens</h1>
+
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <div class="alert @(IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+            @Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Entretiens != null && Entretiens.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Véhicule</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Coût</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entretien in Entretiens)
+                    {
+                        <tr>
+                            <td><strong>#@entretien.Id</strong></td>
+                            <td>@entretien.Vehicule?.Marque @entretien.Vehicule?.Modele</td>
+                            <td>@entretien.TypeEntretien</td>
+                            <td>@entretien.DateEntretien:dd/MM/yyyy</td>
+                            <td>@entretien.Cout.ToString("C")</td>
+                            <td>
+                                <span class="badge bg-@GetStatusColor(entretien.Statut)">
+                                    @entretien.Statut
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/Entretiens/Detail/@entretien.Id" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fas fa-info-circle"></i> Aucun entretien programmé
+        </div>
+    }
+</div>
+
+@functions {
+    public List<EntretienDTO>? Entretiens { get; set; }
+    public string? Message { get; set; }
+    public bool IsError { get; set; }
+
+    private string GetStatusColor(string? statut)
+    {
+        return statut?.ToUpper() switch
+        {
+            "PLANIFIE" => "info",
+            "ENCOURS" => "warning",
+            "TERMINE" => "success",
+            "ANNULE" => "danger",
+            _ => "secondary"
+        };
+    }
+
+    public async Task OnGetAsync()
+    {
+        var user = AuthService.GetCurrentUser();
+        
+        if (user == null)
+        {
+            Response.Redirect("/Auth/Login");
+            return;
+        }
+
+        var response = await EntretienService.GetAllEntretiemsAsync();
+        if (response.Success)
+        {
+            Entretiens = response.Data;
+        }
+        else
+        {
+            Message = response.Message ?? "Erreur lors du chargement";
+            IsError = true;
+        }
+    }
+}
+
+@inject IEntretienService EntretienService
+@inject IAuthService AuthService

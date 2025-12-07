@@ -1,0 +1,202 @@
+@page
+@model CreateModel
+@using Location_voiture_front_web.Models
+
+@{
+    ViewData["Title"] = "Nouvelle Location";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white py-4">
+                    <h1 class="mb-0">
+                        <i class="fas fa-calendar-plus"></i> Créer une nouvelle location
+                    </h1>
+                </div>
+
+                <div class="card-body p-5">
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert @(Model.IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                            <i class="fas @(Model.IsError ? "fa-exclamation-circle" : "fa-check-circle")"></i>
+                            @Model.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (Model.Vehicules != null && Model.Vehicules.Any())
+                    {
+                        <form method="post" class="needs-validation">
+                            <!-- Section Véhicule -->
+                            <div class="form-section mb-5">
+                                <h4 class="mb-4">
+                                    <i class="fas fa-car text-primary"></i> Sélectionner un véhicule
+                                </h4>
+
+                                <div class="mb-4">
+                                    <label for="VehiculeId" class="form-label fw-bold">Véhicule *</label>
+                                    <select id="VehiculeId" name="VehiculeId" class="form-select form-select-lg" required onchange="updateVehiculeInfo()">
+                                        <option value="">-- Choisir un véhicule --</option>
+                                        @foreach (var vehicule in Model.Vehicules)
+                                        {
+                                            <option value="@vehicule.Id" selected="@(Model.VehiculeId == vehicule.Id ? "selected" : "")">
+                                                @vehicule.Marque @vehicule.Modele - @vehicule.PrixJournalier.ToString("C")/jour
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <!-- Affichage du véhicule sélectionné -->
+                                @if (Model.VehiculeSelected != null)
+                                {
+                                    <div class="alert alert-info">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Marque:</strong> @Model.VehiculeSelected.Marque</p>
+                                                <p><strong>Modèle:</strong> @Model.VehiculeSelected.Modele</p>
+                                                <p><strong>Immatriculation:</strong> @Model.VehiculeSelected.Immatriculation</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Année:</strong> @Model.VehiculeSelected.Annee</p>
+                                                <p><strong>Prix journalier:</strong> <span class="badge bg-success">@Model.VehiculeSelected.PrixJournalier.ToString("C")</span></p>
+                                                <p>
+                                                    <span class="badge @(Model.VehiculeSelected.EstDisponible ? "bg-success" : "bg-danger")">
+                                                        @(Model.VehiculeSelected.EstDisponible ? "Disponible" : "Non disponible")
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Section Dates -->
+                            <div class="form-section mb-5">
+                                <h4 class="mb-4">
+                                    <i class="fas fa-calendar text-primary"></i> Période de location
+                                </h4>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="DateDebut" class="form-label fw-bold">Date de début *</label>
+                                            <input type="date" id="DateDebut" name="DateDebut" class="form-control form-control-lg"
+                                                   value="@Model.DateDebut.ToString("yyyy-MM-dd")" required
+                                                   min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")"
+                                                   onchange="calculateDuration()">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label for="DateFin" class="form-label fw-bold">Date de fin *</label>
+                                            <input type="date" id="DateFin" name="DateFin" class="form-control form-control-lg"
+                                                   value="@Model.DateFin.ToString("yyyy-MM-dd")" required
+                                                   onchange="calculateDuration()">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Récapitulatif -->
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Durée:</strong> <span id="duration" class="badge bg-info">--</span> jours</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Prix estimé:</strong> <span id="estimatedPrice" class="badge bg-success">--</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Boutons d'action -->
+                            <div class="d-flex gap-2 justify-content-end">
+                                <a href="/Vehicules" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-check-circle"></i> Confirmer la location
+                                </button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> Aucun véhicule disponible
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-section {
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .form-control-lg, .form-select-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        const prixJournalier = @(Model.VehiculeSelected?.PrixJournalier ?? 0);
+
+        function calculateDuration() {
+            const dateDebut = new Date(document.getElementById('DateDebut').value);
+            const dateFin = new Date(document.getElementById('DateFin').value);
+
+            if (dateDebut && dateFin && dateFin > dateDebut) {
+                const durationMs = dateFin - dateDebut;
+                const durationDays = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
+
+                document.getElementById('duration').textContent = durationDays;
+
+                if (prixJournalier > 0) {
+                    const estimatedPrice = (prixJournalier * durationDays).toFixed(2);
+                    document.getElementById('estimatedPrice').textContent = estimatedPrice + '€';
+                } else {
+                    document.getElementById('estimatedPrice').textContent = '--';
+                }
+            } else {
+                document.getElementById('duration').textContent = '--';
+                document.getElementById('estimatedPrice').textContent = '--';
+            }
+        }
+
+        function updateVehiculeInfo() {
+            const vehiculeId = document.getElementById('VehiculeId').value;
+            if (vehiculeId) {
+                window.location.href = `/Locations/Create?vehiculeId=${vehiculeId}`;
+            }
+        }
+
+        // Initialiser au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateDuration();
+        });
+    </script>
+}
+
+

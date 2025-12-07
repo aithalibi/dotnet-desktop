@@ -1,0 +1,76 @@
+@page
+@model LoginModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Connexion";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h1 class="card-title text-center mb-4">
+                        <i class="fas fa-car"></i> Connexion
+                    </h1>
+
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @Model.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control form-control-lg" id="email" 
+                                   name="email" required placeholder="votre@email.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="motDePasse" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control form-control-lg" id="motDePasse" 
+                                   name="motDePasse" required placeholder="Mot de passe">
+                            <div class="text-end mt-1">
+                                <a href="/Auth/ForgotPassword" class="small text-decoration-none">
+                                    <i class="fas fa-question-circle"></i> Mot de passe oublié ?
+                                </a>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-sign-in-alt"></i> Se connecter
+                        </button>
+                    </form>
+
+                    <hr>
+
+                    <p class="text-center mb-0">
+                        Pas de compte? <a href="/Auth/Register" class="text-decoration-none">S'inscrire</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}
+
+

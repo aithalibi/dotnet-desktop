@@ -1,0 +1,248 @@
+@page
+@model IndexModel
+@using Location_voiture_front_web.Models
+@using Location_voiture_front_web.Services
+@using System.Linq
+@inject ILocationService LocationService
+@inject IAuthService AuthService
+
+@{
+    ViewData["Title"] = "Mes Locations";
+}
+
+<style>
+    .location-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    .location-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    }
+    .location-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .location-body {
+        padding: 25px;
+        background: white;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .info-value {
+        font-weight: 500;
+        color: #333;
+        text-align: right;
+    }
+    .qr-code-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 15px;
+    }
+    .qr-code-section img {
+        max-width: 150px;
+        height: auto;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .action-buttons .btn {
+        flex: 1;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px;
+    }
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .vehicle-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    .price-highlight {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    .empty-state i {
+        font-size: 5rem;
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-calendar-check me-2"></i> Mes Locations</h1>
+        <a href="/Vehicules" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Nouvelle Location
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert @(Model.IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+            @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Locations != null && Model.Locations.Any())
+    {
+        <div class="row">
+            @foreach (var location in Model.Locations)
+            {
+                <div class="col-lg-6 col-xl-4">
+                    <div class="card location-card">
+                        <div class="location-header">
+                            <div>
+                                <div class="vehicle-info">
+                                    <i class="fas fa-car"></i>
+                                    <span>@location.Vehicule?.Marque @location.Vehicule?.Modele</span>
+                                </div>
+                                <small style="opacity: 0.9;">Réservation #@location.Id</small>
+                            </div>
+                            @switch (location.Statut?.ToUpper())
+                            {
+                                case "EN_ATTENTE":
+                                    <span class="status-badge" style="background: #ffc107; color: #000;">En attente</span>
+                                    break;
+                                case "CONFIRMEE":
+                                    <span class="status-badge" style="background: #17a2b8; color: white;">Confirmée</span>
+                                    break;
+                                case "EN_COURS":
+                                    <span class="status-badge" style="background: #007bff; color: white;">En cours</span>
+                                    break;
+                                case "TERMINEE":
+                                    <span class="status-badge" style="background: #28a745; color: white;">Terminée</span>
+                                    break;
+                                case "ANNULEE":
+                                    <span class="status-badge" style="background: #dc3545; color: white;">Annulée</span>
+                                    break;
+                            }
+                        </div>
+                        <div class="location-body">
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fas fa-calendar-alt text-primary"></i> Date de début
+                                </span>
+                                <span class="info-value">@location.DateDebut.ToString("dd/MM/yyyy")<br/><small class="text-muted">@location.DateDebut.ToString("HH:mm")</small></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fas fa-calendar-check text-success"></i> Date de fin
+                                </span>
+                                <span class="info-value">@location.DateFin.ToString("dd/MM/yyyy")<br/><small class="text-muted">@location.DateFin.ToString("HH:mm")</small></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fas fa-clock text-info"></i> Durée
+                                </span>
+                                <span class="info-value">@location.DureeJours jour(s)</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fas fa-dollar-sign text-warning"></i> Montant total
+                                </span>
+                                <span class="info-value price-highlight">@location.MontantTotal.ToString("C")</span>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(location.QRCode))
+                            {
+                                <div class="qr-code-section">
+                                    <p class="mb-2"><strong><i class="fas fa-qrcode me-2"></i>Code QR de la location</strong></p>
+                                    @if (location.QRCode.StartsWith("http"))
+                                    {
+                                        <img src="@location.QRCode" alt="QR Code" />
+                                    }
+                                    else
+                                    {
+                                        <img src="data:image/png;base64,@location.QRCode" alt="QR Code" />
+                                    }
+                                </div>
+                            }
+
+                            <div class="action-buttons">
+                                <a href="/Locations/Detail/@location.Id" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i> Détails
+                                </a>
+                                @if (location.Statut?.ToUpper() != "TERMINEE" && location.Statut?.ToUpper() != "ANNULEE")
+                                {
+                                    <form id="deleteForm_@location.Id" method="post" asp-page-handler="Cancel" style="display:inline;">
+                                        <input type="hidden" name="id" value="@location.Id" />
+                                    </form>
+                                    <button type="button" class="btn btn-outline-danger" 
+                                            onclick="cancelLocation(@location.Id)">
+                                        <i class="fas fa-times me-1"></i> Annuler
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3 class="mb-3">Aucune location pour le moment</h3>
+            <p class="text-muted mb-4">Commencez par réserver un véhicule pour voir vos locations ici</p>
+            <a href="/Vehicules" class="btn btn-primary btn-lg">
+                <i class="fas fa-car me-2"></i> Parcourir les véhicules
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function cancelLocation(id) {
+            if (confirm('Êtes-vous sûr de vouloir annuler cette location?')) {
+                document.getElementById('deleteForm_' + id).submit();
+            }
+        }
+    </script>
+}
+
+

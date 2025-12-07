@@ -1,0 +1,201 @@
+@page
+@using Location_voiture_front_web.Services
+@model Location_voiture_front_web.Pages.Profil.IndexModel
+@{
+    ViewData["Title"] = "Mon Profil";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-circle"></i> Mon Profil
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert @(Model.IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                            @Model.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (Model.ClientProfile == null)
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-spinner fa-spin"></i> Chargement du profil...
+                        </div>
+                    }
+                    else
+                    {
+                        @if (!Model.IsEditing)
+                        {
+                            <div class="profile-view">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Prénom</label>
+                                            <p class="form-control-plaintext h5">@Model.ClientProfile.Prenom</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Nom</label>
+                                            <p class="form-control-plaintext h5">@Model.ClientProfile.Nom</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Email</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.Email</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Téléphone</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.Telephone</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Adresse</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.Adresse</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Numéro de Permis</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.NumeroPermis</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Inscrit le</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.DateInscription.ToString("dd/MM/yyyy")</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mt-4">
+                                    <i class="fas fa-info-circle"></i> <strong>Nombre de locations:</strong> @Model.ClientProfile.NombreLocations
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <a href="/Profil?edit=true" class="btn btn-primary btn-lg flex-grow-1">
+                                        <i class="fas fa-edit"></i> Modifier le profil
+                                    </a>
+                                    <a href="/Locations" class="btn btn-secondary btn-lg flex-grow-1">
+                                        <i class="fas fa-calendar-check"></i> Mes locations
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <form method="post" class="profile-edit">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Prenom" class="form-label">Prénom *</label>
+                                            <input type="text" id="Prenom" name="Prenom" class="form-control" 
+                                                   value="@Model.Prenom" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Nom" class="form-label">Nom *</label>
+                                            <input type="text" id="Nom" name="Nom" class="form-control" 
+                                                   value="@Model.Nom" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label text-muted">Email (non modifiable)</label>
+                                            <p class="form-control-plaintext">@Model.ClientProfile.Email</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Telephone" class="form-label">Téléphone *</label>
+                                            <input type="tel" id="Telephone" name="Telephone" class="form-control" 
+                                                   value="@Model.Telephone" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="Adresse" class="form-label">Adresse *</label>
+                                            <textarea id="Adresse" name="Adresse" class="form-control" rows="2" required>@Model.Adresse</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="NumeroPermis" class="form-label">Numéro de Permis *</label>
+                                            <input type="text" id="NumeroPermis" name="NumeroPermis" class="form-control" 
+                                                   value="@Model.NumeroPermis" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                                        <i class="fas fa-check"></i> Enregistrer les modifications
+                                    </button>
+                                    <a href="/Profil" class="btn btn-secondary btn-lg flex-grow-1">
+                                        <i class="fas fa-times"></i> Annuler
+                                    </a>
+                                </div>
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-view, .profile-edit {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.form-control-plaintext {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+.alert-info {
+    border-left: 4px solid #0d6efd;
+    background-color: #e7f3ff;
+    color: #004085;
+}
+</style>
